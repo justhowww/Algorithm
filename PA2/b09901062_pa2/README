@@ -1,0 +1,3 @@
+ulimit -s 10000
+make
+./bin/MPS ./inputs/100000.in ./outputs/100000.out
