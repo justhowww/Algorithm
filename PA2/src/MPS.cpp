@@ -17,7 +17,7 @@
 using namespace std;
 
 // Constructor
-MPS::MPS(int num_input, vector<int> &left, vector<int> &right, int* pair)
+MPS::MPS(int num_input, vector<int> &left, vector<int> &right, int *pair)
 {
     input_left = left;
     input_right = right;
@@ -46,9 +46,7 @@ int **MPS::buildMaxTable()
             {
                 tempMaxTable[i][j] = -1;
             }
-            // cout << tempMaxTable[i][j] << " ";
         }
-        // cout << endl;
     }
     return tempMaxTable;
 }
@@ -63,10 +61,7 @@ int **MPS::buildAnsTable()
         { // for each column
 
             tempMaxTable[i][j] = -1;
-
-            // cout << tempMaxTable[i][j] << " ";
         }
-        // cout << endl;
     }
     return tempMaxTable;
 }
@@ -117,14 +112,15 @@ int MPS::solveMPS(int i, int j)
                 else
                 {
 
-                    if(k == i){
+                    if (k == i)
+                    {
                         maxTable[i][j] = 1 + v1;
                         ansTable[i][j] = 1;
-                        return 1+v1;
+                        return 1 + v1;
                     }
                     maxTable[i][j] = 1 + v1 + v2;
                     ansTable[i][j] = 2;
-                    
+
                     return 1 + v1 + v2;
                 }
             }
@@ -133,55 +129,11 @@ int MPS::solveMPS(int i, int j)
                 maxTable[i][j] = v3;
                 ansTable[i][j] = 3;
                 return v3;
-
             }
         }
         return maxTable[i][j];
     }
-   
 }
-
-// int MPS::solveMPS(int i, int j)
-// {
-//     if (j >= i)
-//     {
-//         if (maxTable[i][j] == -1)
-//         {
-//             int k = findEndOfJ(j);
-//             int v1 = solveMPS(k + 1, j - 1);
-//             if (k == i)
-//             {
-//                 ansTable[i][j] = 1;
-//                 maxTable[i][j] = 1 + v1;
-//                 return 1 + v1;
-//             }
-//             else
-//             {
-
-//                 int v3 = solveMPS(i, j - 1);
-//                 if (j > k && k > i)
-//                 {
-//                     int v2 = solveMPS(i, k - 1);
-
-//                     if (v3 < 1 + v1 + v2)
-//                     {
-//                         maxTable[i][j] = 1 + v1 + v2;
-//                         ansTable[i][j] = 2;
-//                         return 1 + v1 + v2;
-//                     }
-//                 }
-//                 else
-//                 {
-//                     maxTable[i][j] = v3;
-//                     ansTable[i][j] = 3;
-//                     return v3;
-//                 }
-//             }
-//         }
-//         return maxTable[i][j];
-//     }
-//     return 0;
-// }
 
 void MPS::printSolution(int start, int end)
 {
