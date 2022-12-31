@@ -46,9 +46,11 @@ bool DirectedGraph::hasEdge(int u, int v) {
 bool DirectedGraph::hasCycle() {
     vector<bool> visited(num_vertices_, false);
     vector<int> path;
+
     for (int u = 0; u < num_vertices_; u++) {
         if (visited[u])
             continue;
+
         if (Dfs(u, visited, path))
             return true;
     }
@@ -60,9 +62,9 @@ void DirectedGraph::printRemoveEdges(string outpath) {
     fout.open(outpath, ios::out);
     int sum = 0;
     for (auto e : remove_edges_) {
-        cout << e.u << " ";
-        cout << e.v << " ";
-        cout << e.weight << endl;
+        // cout << e.u << " ";
+        // cout << e.v << " ";
+        // cout << e.weight << endl;
         sum += e.weight;
     }
     cout << remove_edges_.size() << " edges left!" << endl;
@@ -83,11 +85,11 @@ bool DirectedGraph::Dfs(int u, vector<bool> &visited, vector<int> &path) {
     for (int v : adjacency_list_[u]) {
         if (visited[v]) {
             if (find(path.begin(), path.end(), v) != path.end()) {
-                cout << "Cycle: ";
-                for (auto &vertex : path) {
-                    cout << vertex << " ";
-                }
-                cout << endl;
+                // cout << "Cycle: ";
+                // for (auto &vertex : path) {
+                //     cout << vertex << " ";
+                // }
+                // cout << endl;
                 return true;    // Cycle found
             }
         } else {
@@ -101,7 +103,9 @@ bool DirectedGraph::Dfs(int u, vector<bool> &visited, vector<int> &path) {
 
 void DirectedGraph::MST(vector<Edge> &temp) {
     DisjoinSet s(num_vertices_);
-    sort(edges_.begin(), edges_.end());
+    sort(edges_.begin(), edges_.end(), [&](const Edge e1, const Edge e2) {
+        return (e1.weight < e2.weight || (e1.weight == e2.weight && (Degree(e1.v) + Degree(e1.u) < Degree(e2.v) + Degree(e2.u))));
+    });
     for (int32_t i = edges_.size() - 1; i >= 0; --i) {
         if (s.find(edges_[i].u) != s.find(edges_[i].v))
             s.Union(edges_[i].u, edges_[i].v);
@@ -118,13 +122,13 @@ void DirectedGraph::augmentMST() {
     for (Edge e : tempRemoval) {
         removeEdge(e.u, e.v);
     }
-    sort(tempRemoval.begin(), tempRemoval.end(), [](const Edge e1, const Edge e2) {
-        return e1.weight > e2.weight;
+    sort(tempRemoval.begin(), tempRemoval.end(), [&](const Edge e1, const Edge e2) {
+        return (e1.weight > e2.weight || (e1.weight == e2.weight && (Degree(e1.v) > Degree(e2.v))));
     });
 
     // Now we add the assumed-removed edges back, if it has positive weight. We must remove negative weights edges -> smaller
     for (Edge e : tempRemoval) {
-        if (e.weight < 0) {
+        if (e.weight <= 0) {
             remove_edges_.push_back(e);
             continue;
         }
@@ -133,6 +137,9 @@ void DirectedGraph::augmentMST() {
         addEdge(e.u, e.v, e.weight);
 
         if (hasCycle()) {
+            cout << e.u << " ";
+            cout << e.v << " ";
+            cout << e.weight << endl;
             removeEdge(e.u, e.v);
             remove_edges_.push_back(e);
         }

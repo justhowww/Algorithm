@@ -10,6 +10,8 @@
 #include <fstream>
 #include <algorithm>
 #include "MPS.h"
+#include "../lib/tm_usage.h"
+
 
 using namespace std;
 
@@ -27,7 +29,11 @@ int main(int argc, char *argv[])
     }
 
     //////////// read the input file /////////////
+    // 39126216
+    CommonNs::TmUsage tmusg;
+    CommonNs::TmStat stat;
 
+    tmusg.periodStart();
     int N = 0;
     char buffer[200];
     fstream fin(argv[1]);
@@ -54,7 +60,7 @@ int main(int argc, char *argv[])
 
     MPS mps(N, left, right, pair);
     cout << "start solving\n";
-    mps.solveMPS(0, N - 1);
+    mps.solve(0, N - 1);
     // cout << mps.getAnswer() << endl;
 
     cout << "reversing solution" << endl;
@@ -66,6 +72,9 @@ int main(int argc, char *argv[])
         cout << mps.ans[i] << endl;
     }
     //////////// write the output file ///////////
+    tmusg.getPeriodUsage(stat);
+    cout <<"The total CPU time: " << (stat.uTime + stat.sTime) / 1000.0 << "ms" << endl;
+    cout <<"memory: " << stat.vmPeak << "KB" << endl; // print peak memory
     fout << mps.getAnswer() << endl;
     for (int i = 0; i < mps.ans.size(); i++)
         fout << mps.ans[i] << " " << mps.endOfJ[mps.ans[i]] << endl;

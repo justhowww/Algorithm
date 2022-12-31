@@ -17,8 +17,10 @@ bin/mps	: mps_opt.o main_opt.o lib
 			$(CC) $(OPTFLAGS) mps_opt.o main_opt.o -ltm_usage -Llib -o bin/mps
 main_opt.o 	   	: src/main.cpp lib/tm_usage.h
 			$(CC) $(CFLAGS) $< -Ilib -o $@
-mps_opt.o	: src/MPS.cpp src/MPS.h
+mps_opt.o	:  src/MPS.cpp src/MPS.h
 			$(CC) $(CFLAGS) $(OPTFLAGS) $< -o $@
+
+
 
 # DEBUG Version
 dbg : bin/NTU_sort_dbg
